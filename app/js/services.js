@@ -11,29 +11,13 @@ angular.module('myApp.services', [])
     return {
 
         createUser: function(email, password) {
-            $rootScope.auth.$createUser(email, password, false).then(
-                function(user) {
-                    console.log("User was created successfully!");
-                    console.log(user);
-                }, 
-                function(err) {
-                    console.log("Error happens when creating user");
-                    console.log(err);
-                }
-            );
+            return $rootScope.auth.$createUser(email, password, false);
         },
 
-        login: function(email, passowrd) {
-            $rootScope.auth.$login('password', {email: email, passowrd: passowrd}).then(
-                function(user) {
-                    console.log("User was login successfully!");
-                    console.log(user);
-                },
-                function(err){
-                    console.log("Error happens when login user");
-                    console.log(err);
-                }
-            );
+        login: function(email, password) {
+            return $rootScope.auth.$login('password', {email: email, password: password});
         }
     };
-}]);
+}])
+    .factory("")
+;
