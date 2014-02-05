@@ -2,11 +2,32 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', []).
+angular.module('myApp.controllers', ['firebase']).
+  controller('NavigationCtrl', ["$rootScope", "$scope", "$firebase", 'FBURL', function($rootScope, $scope, $firebase, FBURL) {
+        $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
+            $scope.isLoggedIn = true;
+
+            var ref = new Firebase(FBURL + 'users/' + user.id);
+            var user = $firebase(ref);
+            user.$bind($scope, "remoteUser").then(function(unbind) {
+                unbind();
+            });
+        });
+
+
+        $scope.isLoggedIn = false;
+
+        $scope.logout = function() {
+            $rootScope.auth.$logout();
+            $scope.isLoggedIn = false;
+        }
+
+
+  }]).
   controller('HomeCtrl', [function() {
 
   }]).
-  controller("userManagerCtrl", ["$scope", "userManagerService", function($scope, userManagerService){
+  controller("userManagerCtrl", ["$scope", "$location" , "userManagerService", function($scope, $location, userManagerService){
 
         $scope.userInfo = {};
         $scope.userInfo.email = "";
@@ -26,8 +47,9 @@ angular.module('myApp.controllers', []).
                 else {
                     userManagerService.createUser($scope.userInfo.email, $scope.userInfo.password).then(
                         function(user) {
-                            console.log("User was created successfully!");
-                            console.log(user);
+                            console.log("User Profile: " + $scope.userInfo.displayName + " " + $scope.userInfo.email);
+                            userManagerService.createUserProfile(user.id, $scope.userInfo.displayName, $scope.userInfo.email)
+                            $location.path('/');
                         },
                         function(err) {
                             $scope.warningMessages.push(err.message);
@@ -43,8 +65,7 @@ angular.module('myApp.controllers', []).
 
             userManagerService.login($scope.userInfo.email, $scope.userInfo.password).then(
                 function(user) {
-                    console.log("User was login successfully!");
-                    console.log(user);
+                    $location.path('/');
                 },
                 function(err){
                     $scope.warningMessages.push(err.message);

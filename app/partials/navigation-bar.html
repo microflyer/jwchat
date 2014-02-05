@@ -1,4 +1,4 @@
-<div class="navbar navbar-default" role="navigation">
+<div class="navbar navbar-default" role="navigation" ng-controller="NavigationCtrl">
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
     <span class="sr-only">Toggle navigation</span>
@@ -15,9 +15,9 @@
       <li><a href="#">Link</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li class="active"><a href="#">Link</a></li>
-      <li><a href="#">Hello, Daniel</a></li>
-      <li><a href="#login">Login</a></li>
+      <li ng-show="isLoggedIn"><a href="#">Hello, {{remoteUser.name}}</a></li>
+      <li ng-hide="isLoggedIn"><a href="#login">Login</a></li>
+      <li ng-show="isLoggedIn"><a href="#logout" ng-click="logout()">Logout</a></li>
     </ul>
   </div>
   <!--/.nav-collapse -->
