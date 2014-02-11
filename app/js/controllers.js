@@ -2,16 +2,11 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', ['firebase']).
-  controller('NavigationCtrl', ["$rootScope", "$scope", "$firebase", 'FBURL', function($rootScope, $scope, $firebase, FBURL) {
+angular.module('myApp.controllers', []).
+  controller('NavigationCtrl', ["$rootScope", "$scope", "$firebase", 'FBURL', 'userService', function($rootScope, $scope, $firebase, FBURL, userService) {
         $rootScope.$on("$firebaseSimpleLogin:login", function(e, user) {
             $scope.isLoggedIn = true;
-
-            var ref = new Firebase(FBURL + 'users/' + user.id);
-            var user = $firebase(ref);
-            user.$bind($scope, "remoteUser").then(function(unbind) {
-                unbind();
-            });
+            $scope.userRef = userService.getUserRef(user.id);
         });
 
 

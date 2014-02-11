@@ -14,6 +14,8 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'});
   $routeProvider.when('/createuser', {templateUrl: 'partials/create-user.html'});
   $routeProvider.when('/login', {templateUrl: 'partials/login.html'});
+  $routeProvider.when('/addbuddy', {templateUrl: 'partials/add_buddy.html'});
+  $routeProvider.when('/chat', {templateUrl: 'partials/chat.html'});
   $routeProvider.otherwise({redirectTo: '/home'});
 }])
  // establish authentication

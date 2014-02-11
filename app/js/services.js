@@ -5,7 +5,7 @@
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
-angular.module('myApp.services', ["firebase"])
+angular.module('myApp.services', [])
     .factory("userManagerService", ["$rootScope", 'FBURL', '$firebase', function($rootScope, FBURL, $firebase) {
 
         return {
@@ -22,6 +22,37 @@ angular.module('myApp.services', ["firebase"])
                 var usrObj = {email: email, name: displayName}
 
                 $firebase(ref).$set(usrObj);
+            }
+        };
+    }])
+    .factory("userService", ['FBURL', '$firebase', '$q', function(FBURL, $firebase, $q) {
+        return {
+            getUserRef: function(userId) {
+                var ref = new Firebase(FBURL + 'users/' + userId);
+                var userRef = $firebase(ref);
+
+                console.log(userRef);
+
+                return userRef;
+
+                /*
+                var deferred = $q.defer();
+
+                userRef.$on("loaded", function(user){
+                    deferred.resolve(user)
+                });
+
+                return deferred.promise;
+                */
+            },
+            
+            getUsersRef: function() {
+                var ref = new Firebase(FBURL + 'users/' + userId);
+                var usersRef = $firebase(ref);
+
+                console.log(usersRef);
+
+                return usersRef;
             }
         };
     }]);
