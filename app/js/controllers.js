@@ -68,4 +68,24 @@ angular.module('myApp.controllers', []).
             );
         }
 
+  }]).
+  controller("buddyManagerCtrl", ["$rootScope", "$scope", "userService", function($rootScope, $scope, userService){
+      
+      $scope.allUsersList = [];
+
+      $scope.getAllUsersList = function() {
+          var usersRef = userService.getUsersRef();
+          usersRef.$on('loaded', function(){
+              var userIds = usersRef.$getIndex();
+              angular.forEach(userIds, function(userId, index) {
+                if (userId != $rootScope.auth.user.id) {
+                  $scope.allUsersList.push({id: userId, name: usersRef[userId].name, email: usersRef[userId].email})
+                }
+              });
+
+              console.log($scope.allUsersList);       
+          });
+
+      };
+
   }]);

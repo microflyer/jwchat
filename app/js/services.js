@@ -47,12 +47,19 @@ angular.module('myApp.services', [])
             },
             
             getUsersRef: function() {
-                var ref = new Firebase(FBURL + 'users/' + userId);
+                var ref = new Firebase(FBURL + 'users');
                 var usersRef = $firebase(ref);
-
-                console.log(usersRef);
-
                 return usersRef;
+            },
+
+            addBuddy: function(userId, buddyId) {
+                var ref = new Firebase(FBURL + 'users/' + userId);
+                var userRef = $firebase(ref);
+                userRef.$child("buddies").$set({buddyId:true});
+            },
+
+            removeBuddy: function(userId, buddyId) {
+
             }
         };
     }]);

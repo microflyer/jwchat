@@ -1,3 +1,31 @@
-<div class="col-md-12">
-    <h4>You can add buddies in this page!</h4>
+<div class="col-md-12" ng-controller="buddyManagerCtrl" ng-init="getAllUsersList()">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-1">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">All User List</h3>
+              </div>
+              <div class="panel-body">
+                <button type="button" class="btn btn-default btn-block" data-toggle="button" ng-repeat="userInfo in allUsersList" >
+                  {{userInfo.name}} : {{userInfo.email}}
+                </button>
+              </div>
+
+            </div>
+        </div>
+        <div class="col-md-2">
+          <add-buddy></add-buddy>
+          <remove-buddy></remove-buddy>  
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Buddy List</h3>
+              </div>
+              <div class="panel-body">
+                Panel content
+              </div>
+            </div>            
+        </div>
+    </div>
 </div>
