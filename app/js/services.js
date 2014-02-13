@@ -45,6 +45,12 @@ angular.module('myApp.services', [])
                 return deferred.promise;
                 */
             },
+
+            getBuddies: function(userId) {
+                var ref = new Firebase(FBURL + 'users/' + userId);
+                var userRef = $firebase(ref);
+                
+            }
             
             getUsersRef: function() {
                 var ref = new Firebase(FBURL + 'users');

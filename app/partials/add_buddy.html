@@ -6,7 +6,7 @@
                 <h3 class="panel-title">All User List</h3>
               </div>
               <div class="panel-body">
-                <button type="button" class="btn btn-default btn-block" data-toggle="button" ng-repeat="userInfo in allUsersList" >
+                <button type="button" class="btn btn-default btn-block" data-toggle="button" ng-repeat="userInfo in allUsersList" ng-click="userClicked(userInfo.id)" >
                   {{userInfo.name}} : {{userInfo.email}}
                 </button>
               </div>

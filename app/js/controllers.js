@@ -72,6 +72,8 @@ angular.module('myApp.controllers', []).
   controller("buddyManagerCtrl", ["$rootScope", "$scope", "userService", function($rootScope, $scope, userService){
       
       $scope.allUsersList = [];
+      $scope.selectedUserIds = [];
+      $scope.selectedBuddyIds = [];
 
       $scope.getAllUsersList = function() {
           var usersRef = userService.getUsersRef();
@@ -85,7 +87,19 @@ angular.module('myApp.controllers', []).
 
               console.log($scope.allUsersList);       
           });
+      };
 
+      $scope.userClicked = function(userId) {
+
+          if ($scope.selectedUserIds.indexOf(userId) == -1) {
+              $scope.selectedUserIds.push(userId);
+          }
+          else {
+              $scope.selectedUserIds.splice($scope.selectedUserIds.indexOf(userId), 1);
+          }
+
+          console.log("selectedUserIds = ");
+          console.log($scope.selectedUserIds);
       };
 
   }]);
