@@ -72,20 +72,27 @@ angular.module('myApp.controllers', []).
   controller("buddyManagerCtrl", ["$rootScope", "$scope", "userService", function($rootScope, $scope, userService){
       
       $scope.allUsersList = [];
+      $scope.buddyList = [];
       $scope.selectedUserIds = [];
       $scope.selectedBuddyIds = [];
 
-      $scope.getAllUsersList = function() {
-          var usersRef = userService.getUsersRef();
-          usersRef.$on('loaded', function(){
-              var userIds = usersRef.$getIndex();
-              angular.forEach(userIds, function(userId, index) {
-                if (userId != $rootScope.auth.user.id) {
-                  $scope.allUsersList.push({id: userId, name: usersRef[userId].name, email: usersRef[userId].email})
-                }
-              });
+      $scope.loadInitialData = function() {
+          var usersRef = userService.getAllUsers().then(function(users) {
+              userService.getBuddyIds($rootScope.auth.user.id).then(function(buddyIds){
 
-              console.log($scope.allUsersList);       
+                  console.log("Buddy ID changed in controller!");
+                  angular.forEach(users, function(user, index) {
+                      if (user.id != $rootScope.auth.user.id && buddyIds.indexOf(user.id) == -1) {
+                          $scope.allUsersList.push(user);
+                      }
+                  });
+
+                  angular.forEach(buddyIds, function(buddyId, index){
+                      userService.getUser(buddyId).then(function(user){
+                          $scope.buddyList.push(user);
+                      });
+                  });
+              });
           });
       };
 
@@ -97,9 +104,18 @@ angular.module('myApp.controllers', []).
           else {
               $scope.selectedUserIds.splice($scope.selectedUserIds.indexOf(userId), 1);
           }
+      };
 
-          console.log("selectedUserIds = ");
-          console.log($scope.selectedUserIds);
+      $scope.buddyClicked = function(buddyId) {
+
+          if ($scope.selectedBuddyIds.indexOf(buddyId) == -1) {
+              $scope.selectedBuddyIds.push(buddyId);
+          }
+          else {
+              $scope.selectedBuddyIds.splice($scope.selectedBuddyIds.indexOf(buddyId), 1);
+          }
+
+          console.log($scope.selectedBuddyIds);
       };
 
   }]);

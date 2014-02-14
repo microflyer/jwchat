@@ -31,41 +31,78 @@ angular.module('myApp.services', [])
                 var ref = new Firebase(FBURL + 'users/' + userId);
                 var userRef = $firebase(ref);
 
-                console.log(userRef);
-
                 return userRef;
+            },
 
-                /*
+            getUser: function(userId) {
+                var ref = new Firebase(FBURL + 'users/' + userId);
+                var userRef = $firebase(ref);
                 var deferred = $q.defer();
 
-                userRef.$on("loaded", function(user){
-                    deferred.resolve(user)
+                userRef.$on("loaded", function() {
+                    var user = {id: userId, name: userRef.name, email: userRef.email};
+                    deferred.resolve(user);
                 });
 
                 return deferred.promise;
-                */
             },
 
-            getBuddies: function(userId) {
+            getBuddyIds: function(userId, callback) {
                 var ref = new Firebase(FBURL + 'users/' + userId);
                 var userRef = $firebase(ref);
-                
-            }
+                var deferred = $q.defer();
+
+                userRef.$on("change", function() {
+
+                    console.log("Buddy Id Changed!");
+
+                    var buddyIds = [];
+
+                    if (userRef.buddies) {
+
+                        angular.forEach(userRef.buddies, function(value, key){
+                            buddyIds.push(key);
+                        });
+                    }
+
+                    deferred.resolve(buddyIds);
+
+                    if (callback) {
+                        callback(buddyIds);
+                    };
+                });
+
+                return deferred.promise;
+            },
             
-            getUsersRef: function() {
+            getAllUsers: function() {
                 var ref = new Firebase(FBURL + 'users');
                 var usersRef = $firebase(ref);
-                return usersRef;
+                var deferred = $q.defer();
+
+                usersRef.$on('loaded', function(){
+                    var users = [];
+                    var userIds = usersRef.$getIndex();
+                    angular.forEach(userIds, function(userId, index) {
+                        users.push({id: userId, name: usersRef[userId].name, email: usersRef[userId].email});
+                        deferred.resolve(users);
+                    });
+                });
+
+                return deferred.promise;
             },
 
             addBuddy: function(userId, buddyId) {
                 var ref = new Firebase(FBURL + 'users/' + userId);
                 var userRef = $firebase(ref);
-                userRef.$child("buddies").$set({buddyId:true});
+                userRef.$child("buddies").$child(buddyId).$set(true);
             },
 
             removeBuddy: function(userId, buddyId) {
-
+                var ref = new Firebase(FBURL + 'users/' + userId);
+                var userRef = $firebase(ref);
+                userRef.$child("buddies").$remove(buddyId);
+                console.log("remove buddy");
             }
         };
     }]);

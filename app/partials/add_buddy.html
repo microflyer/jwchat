@@ -1,4 +1,4 @@
-<div class="col-md-12" ng-controller="buddyManagerCtrl" ng-init="getAllUsersList()">
+<div class="col-md-12" ng-controller="buddyManagerCtrl" ng-init="loadInitialData()">
     <div class="row">
         <div class="col-md-4 col-md-offset-1">
             <div class="panel panel-info">
@@ -23,7 +23,9 @@
                 <h3 class="panel-title">Buddy List</h3>
               </div>
               <div class="panel-body">
-                Panel content
+                <button type="button" class="btn btn-info btn-block" data-toggle="button" ng-repeat="userInfo in buddyList" ng-click="buddyClicked(userInfo.id)" >
+                  {{userInfo.name}} : {{userInfo.email}}
+                </button>
               </div>
             </div>            
         </div>
