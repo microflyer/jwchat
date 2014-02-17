@@ -69,7 +69,7 @@ angular.module('myApp.controllers', []).
         }
 
   }]).
-  controller("buddyManagerCtrl", ["$rootScope", "$scope", "userService", function($rootScope, $scope, userService){
+  controller("buddyManagerCtrl", ["$rootScope", "$scope", "$timeout","userService", function($rootScope, $scope, $timeout, userService){
       
       $scope.allUsersList = [];
       $scope.buddyList = [];
@@ -94,6 +94,39 @@ angular.module('myApp.controllers', []).
                   });
               });
           });
+
+          // register for the change event of buddy list
+          // TODO: make the user select status UI and data match
+          $timeout(function() {
+
+                userService.getBuddyIds($rootScope.auth.user.id, function(buddyIds){
+                  angular.forEach(buddyIds, function(buddyId, index){
+                      for (var i = 0; i < $scope.allUsersList.length; i++) {
+                          // for user in alluserslist, if buddy id exists, add it to buddy list and remove it from alluserslist
+                          if (buddyId == $scope.allUsersList[i].id) {
+                              $scope.allUsersList.splice(i, 1);
+                              userService.getUser(buddyId).then(function(user){
+                                  $scope.buddyList.push(user);
+                              });
+                          }
+                      }
+                  });
+                  $scope.selectedUserIds = [];
+
+                  angular.forEach($scope.buddyList, function(buddy, index){
+                        // for each buddy in buddylist, if it doesn't exist in buddyIds(server side), 
+                        // we should remove it from buddy list and add it to user list
+                        if (buddyIds.indexOf(buddy.id) == -1) {
+                            $scope.buddyList.splice(index, 1);
+                            userService.getUser(buddy.id).then(function(user){
+                                $scope.allUsersList.push(user);
+                            });
+                        }
+                    });
+                    $scope.selectedBuddyIds = [];
+               });
+
+          }, 5000);
       };
 
       $scope.userClicked = function(userId) {
