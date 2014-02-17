@@ -109,10 +109,10 @@ angular.module('myApp.services', [])
                     return deferred.promise;
                 },
 
-                addBuddy: function (userId, buddyId) {
+                addBuddy: function (userId, buddyId, channelId) {
                     var ref = new Firebase(FBURL + 'users/' + userId);
                     var userRef = $firebase(ref);
-                    userRef.$child("buddies").$child(buddyId).$set(true);
+                    userRef.$child("buddies").$child(buddyId).$set(channelId);
                 },
 
                 removeBuddy: function (userId, buddyId) {
@@ -123,4 +123,46 @@ angular.module('myApp.services', [])
                 }
             };
         }
-    ]);
+    ])
+    .factory("chatService", ['FBURL', '$firebase', '$q', function(FBURL, $firebase, $q){
+        return {
+            createChannel: function(userId1, userId2) {
+                var channelsRef = $firebase(new Firebase(FBURL + 'channels/'));
+
+                var deferred = $q.defer();
+
+                var datetime = (new Date()).toUTCString();
+                var firstMsg = { senderId: userId1, text: "Now we can start talking to each other", sendDttm: datetime };
+
+                channelsRef.$add({createrId: userId1}).then( function(ref) {
+
+                    var channelId = ref.name();
+                    var channelRef = $firebase(ref);
+
+                    channelRef.$child("users").$child(userId1).$set(true);
+                    channelRef.$child("users").$child(userId2).$set(true);
+
+                    channelRef.$child("messages").$add(firstMsg).then(function(messageRef){
+                        deferred.resolve(channelId);
+                    });
+                });
+
+                return deferred.promise;
+            },
+
+            removeChannel: function(channelId) {
+                var channelsRef = $firebase(new Firebase(FBURL + 'channels/'));
+                channelsRef.$remove(channelId);
+            },
+
+            addMessage: function(channelId, senderId, text) {
+                var channelRef = $firebase(new Firebase(FBURL + 'channels/' + channelId));
+
+                var datetime = (new Date()).toUTCString();
+                var msg = { senderId: senderId, text: text, sendDttm: datetime };
+
+                channelRef.$(messages).$add(msg);
+            }
+        }
+
+    }]);
