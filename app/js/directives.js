@@ -4,8 +4,17 @@
 
 
 angular.module('myApp.directives', []).
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
+  directive('assignmentModal', [function() {
+  	return {
+  		restrict: 'A',
+  		scope: false,
+  		templateUrl: 'partials/modal-content.html',
+  		link: function (scope, elem, attr) {
+
+  			$(elem).on('click', function() {
+  				$('#myModal').modal('show');
+  			});
+
+  		}
+  	};
   }]);
