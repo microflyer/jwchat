@@ -3,8 +3,11 @@
 /* Controllers */
 
 angular.module('myApp.controllers', []).
-  controller('MyCtrl1', [function() {
-
+  controller('firstController', ['$scope', function($scope) {
+    $scope.assignment = {
+        id: 1,
+        name: "Destroy the world"
+    }
   }])
   .controller('MyCtrl2', [function() {
 
