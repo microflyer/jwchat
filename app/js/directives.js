@@ -5,48 +5,49 @@
 
 angular.module('myApp.directives', []).
 directive('assignmentModal', ['$compile', '$http', '$templateCache',
-  function ($compile, $http, $templateCache) {
-    return {
-      restrict: 'A',
-      scope: {
-        assignment: '='
-      },
-      //templateUrl: 'partials/modal-content.html',
-      replace: false,
-      link: function (scope, elem, attr) {
+    function ($compile, $http, $templateCache) {
+        return {
+            restrict: 'A',
+            scope: {
+                assignment: '='
+            },
+            //templateUrl: 'partials/modal-content.html',
+            replace: false,
+            link: function (scope, elem, attr) {
 
-        $http.get('partials/modal-content.html', {
-          cache: $templateCache
-        })
-          .success(function (htmlToAdd) {
-            if (!$(elem).attr('compiled')) {
-              $(elem).attr('compiled', "true");
+                $http.get('partials/modal-content.html', {
+                    cache: $templateCache
+                })
+                    .success(function (htmlToAdd) {
+                        if (!$(elem).attr('compiled')) {
+                            $(elem).attr('compiled', "true");
 
-              $(elem).on('click', function () {
-                $('#myModal').modal('show');
-                console.log("show the modal");
-                $(elem).off('click');
-              });
+                            $(elem).on('click', function () {
+                                $(elem).find('.modal').modal('show');
+                                $(elem).off('click');
+                            });
 
-              $('#myModal').on('hidden.bs.modal', function (e) {
-                console.log("modal is hidden!");
-                $(elem).on('click', function () {
-                  $('#myModal').modal('show');
-                });
-              });
+                            var htmlContent = $(elem).html();
+                            var modalHtmlBefore = '<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+                            modalHtmlBefore += '<div class="modal-dialog"><div class="modal-content"><div class="modal-body">';
+                            var modalHtmlAfter = '</div></div></div></div>';
 
-              var htmlContent = $(elem).html();
-              //var htmlToAdd = '{{assignment.name}}';
-              $(elem).html(htmlContent + htmlToAdd);
+                            $(elem).html(htmlContent + modalHtmlBefore + htmlToAdd + modalHtmlAfter);
 
-              $compile(elem)(scope);
+                            $(elem).find('.modal-dialog').css("width", "850px");
+                            $(elem).find('.modal-body').css("height", "800px");
+
+                            $(elem).find('.modal').on('hidden.bs.modal', function (e) {
+                                $(elem).on('click', function () {
+                                    $(elem).find('.modal').modal('show');
+                                    $(elem).off('click');
+                                });
+                            });
+
+                            $compile(elem)(scope);
+                        }
+                    });
             }
-          });
-
-
-
-
-      }
-    };
-  }
+        };
+    }
 ]);
